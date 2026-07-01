@@ -181,6 +181,35 @@
       });
     }
 
+    // Carrusel inline (independiente del script.js)
+    let carouselState = { position: 0, animId: null, speed: 0.8, setWidth: 0 };
+
+    function startCarousel(track) {
+      if (carouselState.animId) cancelAnimationFrame(carouselState.animId);
+
+      // Esperar a que las imágenes estén en el DOM para medir
+      setTimeout(() => {
+        const items = track.querySelectorAll('.carrusel-item');
+        if (items.length === 0) return;
+        const first = items[0];
+        const second = items[1];
+        if (!second) return;
+        const itemWidth = first.getBoundingClientRect().width;
+        const gap = second.getBoundingClientRect().left - first.getBoundingClientRect().right;
+        carouselState.setWidth = (itemWidth + gap) * (items.length / 2);
+        carouselState.position = 0;
+
+        function loop() {
+          carouselState.position -= carouselState.speed;
+          // Normalizar
+          while (carouselState.position <= -carouselState.setWidth) carouselState.position += carouselState.setWidth;
+          track.style.transform = `translateX(${carouselState.position}px)`;
+          carouselState.animId = requestAnimationFrame(loop);
+        }
+        loop();
+      }, 100);
+    }
+
     // Renderizar galería
     function renderGallery() {
       const track = document.getElementById('carrusel-track');
@@ -192,7 +221,7 @@
         const items = [];
         snap.forEach(docSnap => items.push(docSnap.data()));
 
-        // Duplicar para el loop del carrusel
+        // Duplicar para el loop infinito
         const all = [...items, ...items];
         track.innerHTML = all.map(d => `
           <div class="carrusel-item">
@@ -201,11 +230,7 @@
           </div>
         `).join('');
 
-        // Reiniciar el carrusel
-        if (window.CarouselInstance) {
-          window.CarouselInstance.stopAuto();
-          window.CarouselInstance.init();
-        }
+        startCarousel(track);
       });
     }
 
