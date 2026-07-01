@@ -2,15 +2,13 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Cargando datos iniciales · Bola 8</title>
+  <title>Cargando datos · Bola 8</title>
   <style>
     body { background: #0d0d0d; color: #e8e8e8; font-family: sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
     .box { background: #1a1a1a; border: 1px solid #2e2e2e; border-radius: 10px; padding: 2rem; max-width: 500px; width: 100%; }
     h2 { color: #c9a84c; margin-bottom: 1rem; }
     #log { font-size: .85rem; color: #888; line-height: 1.8; max-height: 300px; overflow-y: auto; }
-    .ok { color: #4caf72; }
-    .err { color: #e05555; }
-    .done { color: #c9a84c; font-weight: bold; margin-top: 1rem; }
+    .ok { color: #4caf72; } .err { color: #e05555; } .done { color: #c9a84c; font-weight: bold; margin-top: 1rem; }
   </style>
 </head>
 <body>
@@ -18,31 +16,19 @@
   <h2>Cargando datos iniciales...</h2>
   <div id="log"></div>
 </div>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyDcWtSss5qFPZxLpVyGEQtBqqTY7MmPMjw",
-    authDomain: "bola8-5bee0.firebaseapp.com",
-    projectId: "bola8-5bee0",
-    storageBucket: "bola8-5bee0.firebasestorage.app",
-    messagingSenderId: "745518194962",
-    appId: "1:745518194962:web:3724a0405a8030764dd3cb"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+<script>
+  const SUPA_URL = 'https://abqfnrbkrsswegfezxsp.supabase.co';
+  const SUPA_KEY = 'sb_publishable_6UhtiSpb-z5Pqo5HoLX1gQ_ccjh34Dn';
   const log = document.getElementById('log');
 
   function print(msg, cls = '') {
     const p = document.createElement('p');
-    p.className = cls;
-    p.textContent = msg;
-    log.appendChild(p);
-    log.scrollTop = log.scrollHeight;
+    p.className = cls; p.textContent = msg;
+    log.appendChild(p); log.scrollTop = log.scrollHeight;
+  }
+
+  function h() {
+    return { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}`, 'Content-Type': 'application/json' };
   }
 
   const OFERTAS = [
@@ -95,35 +81,31 @@
     { texto: 'Noches Inolvidables', imagen: 'img/Noches.webp', orden: 5 },
   ];
 
-  async function clearCollection(name) {
-    const snap = await getDocs(collection(db, name));
-    await Promise.all(snap.docs.map(d => deleteDoc(doc(db, name, d.id))));
+  async function clearTable(table) {
+    await fetch(`${SUPA_URL}/rest/v1/${table}?id=neq.00000000-0000-0000-0000-000000000000`, { method: 'DELETE', headers: h() });
   }
 
-  async function seedCollection(name, items) {
-    await clearCollection(name);
+  async function seedTable(table, items) {
+    await clearTable(table);
     for (const item of items) {
-      await addDoc(collection(db, name), item);
-      print(`✓ ${item.nombre}`, 'ok');
+      const res = await fetch(`${SUPA_URL}/rest/v1/${table}`, { method: 'POST', headers: h(), body: JSON.stringify(item) });
+      if (res.ok) print(`✓ ${item.nombre || item.texto}`, 'ok');
+      else print(`✗ Error: ${item.nombre || item.texto}`, 'err');
     }
   }
 
   async function run() {
     try {
       print('Cargando ofertas...');
-      await seedCollection('ofertas', OFERTAS);
-
+      await seedTable('ofertas', OFERTAS);
       print('Cargando bebidas...');
-      await seedCollection('bebidas', BEBIDAS);
-
+      await seedTable('bebidas', BEBIDAS);
       print('Cargando comida...');
-      await seedCollection('comida', COMIDA);
-
+      await seedTable('comida', COMIDA);
       print('Cargando galería...');
-      await seedCollection('galeria', GALERIA);
-
-      print('✅ ¡Listo! Todos los datos fueron cargados correctamente. Puedes cerrar esta página.', 'done');
-    } catch (e) {
+      await seedTable('galeria', GALERIA);
+      print('✅ ¡Listo! Todos los datos fueron cargados. Puedes cerrar esta página.', 'done');
+    } catch(e) {
       print('❌ Error: ' + e.message, 'err');
     }
   }
