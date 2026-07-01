@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cargando datos iniciales · Bola 8</title>
+  <style>
+    body { background: #0d0d0d; color: #e8e8e8; font-family: sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+    .box { background: #1a1a1a; border: 1px solid #2e2e2e; border-radius: 10px; padding: 2rem; max-width: 500px; width: 100%; }
+    h2 { color: #c9a84c; margin-bottom: 1rem; }
+    #log { font-size: .85rem; color: #888; line-height: 1.8; max-height: 300px; overflow-y: auto; }
+    .ok { color: #4caf72; }
+    .err { color: #e05555; }
+    .done { color: #c9a84c; font-weight: bold; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+<div class="box">
+  <h2>Cargando datos iniciales...</h2>
+  <div id="log"></div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDcWtSss5qFPZxLpVyGEQtBqqTY7MmPMjw",
+    authDomain: "bola8-5bee0.firebaseapp.com",
+    projectId: "bola8-5bee0",
+    storageBucket: "bola8-5bee0.firebasestorage.app",
+    messagingSenderId: "745518194962",
+    appId: "1:745518194962:web:3724a0405a8030764dd3cb"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const log = document.getElementById('log');
+
+  function print(msg, cls = '') {
+    const p = document.createElement('p');
+    p.className = cls;
+    p.textContent = msg;
+    log.appendChild(p);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  const OFERTAS = [
+    { nombre: 'Mesa de Billar', precio: '600 Cup la hora', descripcion: '', imagen: 'img/Mesa.webp' },
+    { nombre: 'PlayStation 5', precio: '1000 Cup la hora', descripcion: '', imagen: 'img/Play.webp' },
+  ];
+
+  const BEBIDAS = [
+    { nombre: 'Cerveza Cristal', precio: '400 Cup', descripcion: '', imagen: 'img/Cerveza Cristal.jpg' },
+    { nombre: 'Cerveza Bucanero', precio: '400 Cup', descripcion: '', imagen: 'img/Bucanero.webp' },
+    { nombre: 'Cerveza Unlaguer', precio: '300 Cup', descripcion: '', imagen: 'img/Cerveza Unlaguer.webp' },
+    { nombre: 'Cerveza La Fría', precio: '300 Cup', descripcion: '', imagen: 'img/Cerveza La fria.webp' },
+    { nombre: 'Cerveza Holland', precio: '300 Cup', descripcion: '', imagen: 'img/Cerveza Holland.webp' },
+    { nombre: 'Cerveza Parranda', precio: '260 Cup', descripcion: '', imagen: 'img/Cerveza Parranda.webp' },
+    { nombre: 'Shot de Tequila', precio: '500 Cup', descripcion: '', imagen: 'img/Shot tequila.webp' },
+    { nombre: 'Shot de Whisky', precio: '300 Cup', descripcion: '', imagen: 'img/Shot Whisky.webp' },
+    { nombre: 'Red Bull', precio: '550 Cup', descripcion: '', imagen: 'img/Redbull.webp' },
+    { nombre: 'Shaka', precio: '500 Cup', descripcion: '', imagen: 'img/Shaka.webp' },
+    { nombre: 'Vodka', precio: '500 Cup', descripcion: '', imagen: 'img/VodKa.webp' },
+    { nombre: 'Go+ Energy Drink', precio: '300 Cup', descripcion: '', imagen: 'img/Go +.jfif' },
+    { nombre: 'Malta Hollandia', precio: '300 Cup', descripcion: '', imagen: 'img/Malta Hollandia.webp' },
+    { nombre: 'Malta Guajira', precio: '300 Cup', descripcion: '', imagen: 'img/Malta Guajira.webp' },
+    { nombre: 'Refresco Santa Orange', precio: '260 Cup', descripcion: '', imagen: 'img/Santa Orange.webp' },
+    { nombre: 'Refresco Santa Lemon & Lima', precio: '260 Cup', descripcion: '', imagen: 'img/Santa Lemon.webp' },
+    { nombre: 'Refresco Cola Boom', precio: '260 Cup', descripcion: '', imagen: 'img/Refresco Cola.webp' },
+    { nombre: 'Jugo Sima', precio: '220 Cup', descripcion: '', imagen: 'img/Jugo Sima.jfif' },
+  ];
+
+  const COMIDA = [
+    { nombre: 'Picadera Bola 8', precio: '2000 Cup', descripcion: '', imagen: 'img/Picadera.webp' },
+    { nombre: 'Hamburguesa', precio: '750 Cup', descripcion: '', imagen: 'img/Hamburguesa .webp' },
+    { nombre: 'Croquetas de la abuela', precio: '500 Cup', descripcion: '', imagen: 'img/Croquetas.webp' },
+    { nombre: 'Ración de papas', precio: '400 Cup', descripcion: '', imagen: 'img/Papas.webp' },
+    { nombre: 'Pelly de jamón', precio: '750 Cup', descripcion: '', imagen: 'img/Pelly de Jamon.webp' },
+    { nombre: "Lay's", precio: '400 Cup', descripcion: '', imagen: "img/Lay's.webp" },
+    { nombre: 'Doritos', precio: '400 Cup', descripcion: '', imagen: 'img/Doritos.webp' },
+    { nombre: 'Cheetos', precio: '400 Cup', descripcion: '', imagen: 'img/Chetos.webp' },
+    { nombre: 'Galletas Renata', precio: '250 Cup', descripcion: '', imagen: 'img/Galletas Renata.webp' },
+    { nombre: 'Galletas Hola', precio: '250 Cup', descripcion: '', imagen: 'img/Galletas hola.webp' },
+    { nombre: 'Galletas Porleo', precio: '170 Cup', descripcion: '', imagen: 'img/Porleo .webp' },
+    { nombre: 'Galletas Anita', precio: '170 Cup', descripcion: '', imagen: 'img/Anita.webp' },
+  ];
+
+  const GALERIA = [
+    { texto: 'Ambiente Único', imagen: 'img/Ambiente.webp', orden: 0 },
+    { texto: 'Buenos Momentos', imagen: 'img/Buenos momentos.webp', orden: 1 },
+    { texto: 'Experiencia Única', imagen: 'img/Experiencia Unica.webp', orden: 2 },
+    { texto: 'Excelente personal', imagen: 'img/Equipo.webp', orden: 3 },
+    { texto: 'Buen Juego', imagen: 'img/Buen juego.webp', orden: 4 },
+    { texto: 'Noches Inolvidables', imagen: 'img/Noches.webp', orden: 5 },
+  ];
+
+  async function clearCollection(name) {
+    const snap = await getDocs(collection(db, name));
+    await Promise.all(snap.docs.map(d => deleteDoc(doc(db, name, d.id))));
+  }
+
+  async function seedCollection(name, items) {
+    await clearCollection(name);
+    for (const item of items) {
+      await addDoc(collection(db, name), item);
+      print(`✓ ${item.nombre}`, 'ok');
+    }
+  }
+
+  async function run() {
+    try {
+      print('Cargando ofertas...');
+      await seedCollection('ofertas', OFERTAS);
+
+      print('Cargando bebidas...');
+      await seedCollection('bebidas', BEBIDAS);
+
+      print('Cargando comida...');
+      await seedCollection('comida', COMIDA);
+
+      print('Cargando galería...');
+      await seedCollection('galeria', GALERIA);
+
+      print('✅ ¡Listo! Todos los datos fueron cargados correctamente. Puedes cerrar esta página.', 'done');
+    } catch (e) {
+      print('❌ Error: ' + e.message, 'err');
+    }
+  }
+
+  run();
+</script>
+</body>
+</html>
