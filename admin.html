@@ -7,443 +7,154 @@
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #0d0d0d;
-      --surface: #1a1a1a;
-      --surface2: #242424;
-      --border: #2e2e2e;
-      --accent: #c9a84c;
-      --accent-dark: #a8882e;
-      --text: #e8e8e8;
-      --text-muted: #888;
-      --danger: #e05555;
-      --success: #4caf72;
-      --radius: 10px;
+      --bg: #0d0d0d; --surface: #1a1a1a; --surface2: #242424; --border: #2e2e2e;
+      --accent: #c9a84c; --accent-dark: #a8882e; --text: #e8e8e8; --text-muted: #888;
+      --danger: #e05555; --success: #4caf72; --radius: 10px;
     }
+    body { background: var(--bg); color: var(--text); font-family: 'Open Sans', sans-serif; min-height: 100vh; }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Open Sans', sans-serif;
-      min-height: 100vh;
-    }
-
-    /* ── LOGIN ── */
-    #login-screen {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 1rem;
-    }
-
-    .login-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2.5rem 1.75rem;
-      width: 100%;
-      max-width: 360px;
-      text-align: center;
-    }
-
-    .logo {
-      font-family: 'Oswald', sans-serif;
-      font-size: 2rem;
-      font-weight: 600;
-      color: var(--text);
-    }
+    #login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 1rem; }
+    .login-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.5rem 1.75rem; width: 100%; max-width: 360px; text-align: center; }
+    .logo { font-family: 'Oswald', sans-serif; font-size: 2rem; font-weight: 600; color: var(--text); }
     .logo span { color: var(--accent); }
-
-    .login-box .subtitle { color: var(--text-muted); font-size: .85rem; margin: .25rem 0 2rem; }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: .4rem;
-      margin-bottom: 1rem;
-      text-align: left;
-    }
-
+    .subtitle { color: var(--text-muted); font-size: .85rem; margin: .25rem 0 2rem; }
+    .field { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1rem; text-align: left; }
     .field label { font-size: .8rem; color: var(--text-muted); }
-
-    .field input,
-    .field textarea,
-    .field select {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text);
-      padding: .7rem 1rem;
-      font-size: .95rem;
-      width: 100%;
-      outline: none;
-      transition: border-color .2s;
-      font-family: 'Open Sans', sans-serif;
+    .field input, .field textarea {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); padding: .7rem 1rem; font-size: .95rem; width: 100%;
+      outline: none; transition: border-color .2s; font-family: 'Open Sans', sans-serif;
     }
-
-    .field input:focus,
-    .field textarea:focus { border-color: var(--accent); }
+    .field input:focus, .field textarea:focus { border-color: var(--accent); }
     .field textarea { resize: vertical; min-height: 80px; }
-
     .btn-primary {
-      background: var(--accent);
-      color: #0d0d0d;
-      border: none;
-      border-radius: 6px;
-      padding: .75rem 1.5rem;
-      font-family: 'Oswald', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      transition: background .2s;
-      margin-top: .25rem;
+      background: var(--accent); color: #0d0d0d; border: none; border-radius: 6px;
+      padding: .75rem 1.5rem; font-family: 'Oswald', sans-serif; font-size: 1rem;
+      font-weight: 600; cursor: pointer; width: 100%; transition: background .2s; margin-top: .25rem;
     }
     .btn-primary:hover { background: var(--accent-dark); }
     .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+    .error-msg { color: var(--danger); font-size: .82rem; margin-top: .75rem; display: none; }
 
-    .error-msg {
-      color: var(--danger);
-      font-size: .82rem;
-      margin-top: .75rem;
-      display: none;
-    }
-
-    /* ── ADMIN ── */
     #admin-screen { display: none; }
-
     .topbar {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: .75rem 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: .75rem 1rem; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
     }
-
     .topbar .logo { font-size: 1.35rem; }
     .topbar .badge { font-size: .65rem; color: var(--text-muted); margin-left: .35rem; vertical-align: middle; }
     .topbar-right { display: flex; gap: .5rem; align-items: center; }
-
     .btn-sm {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      border-radius: 6px;
-      padding: .38rem .75rem;
-      font-size: .78rem;
-      cursor: pointer;
-      transition: all .2s;
-      white-space: nowrap;
+      background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+      border-radius: 6px; padding: .38rem .75rem; font-size: .78rem; cursor: pointer;
+      transition: all .2s; white-space: nowrap;
     }
     .btn-sm:hover { border-color: var(--accent); color: var(--accent); }
     .btn-sm.danger:hover { border-color: var(--danger); color: var(--danger); }
 
-    /* ── TABS ── */
     .tabs {
-      display: flex;
-      gap: .2rem;
-      padding: .6rem .75rem .4rem;
-      overflow-x: auto;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
+      display: flex; gap: .2rem; padding: .6rem .75rem .4rem;
+      overflow-x: auto; border-bottom: 1px solid var(--border);
+      background: var(--surface); scrollbar-width: none; -webkit-overflow-scrolling: touch;
     }
     .tabs::-webkit-scrollbar { display: none; }
-
     .tab-btn {
-      background: transparent;
-      border: 1px solid transparent;
-      color: var(--text-muted);
-      border-radius: 6px;
-      padding: .4rem .85rem;
-      font-size: .82rem;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all .2s;
-      flex-shrink: 0;
+      background: transparent; border: 1px solid transparent; color: var(--text-muted);
+      border-radius: 6px; padding: .4rem .85rem; font-size: .82rem; cursor: pointer;
+      white-space: nowrap; transition: all .2s; flex-shrink: 0;
     }
     .tab-btn:hover { color: var(--text); }
     .tab-btn.active { background: var(--surface2); border-color: var(--border); color: var(--accent); }
 
-    /* ── MAIN ── */
-    .main {
-      padding: 1.25rem 1rem;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.25rem;
-      gap: .5rem;
-    }
-    .section-header h2 {
-      font-family: 'Oswald', sans-serif;
-      font-size: 1.15rem;
-      font-weight: 600;
-    }
-
+    .main { padding: 1.25rem 1rem; max-width: 900px; margin: 0 auto; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; gap: .5rem; }
+    .section-header h2 { font-family: 'Oswald', sans-serif; font-size: 1.15rem; font-weight: 600; }
     .btn-add {
-      background: var(--accent);
-      color: #0d0d0d;
-      border: none;
-      border-radius: 6px;
-      padding: .48rem .95rem;
-      font-family: 'Oswald', sans-serif;
-      font-size: .85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .2s;
-      white-space: nowrap;
-      flex-shrink: 0;
+      background: var(--accent); color: #0d0d0d; border: none; border-radius: 6px;
+      padding: .48rem .95rem; font-family: 'Oswald', sans-serif; font-size: .85rem;
+      font-weight: 600; cursor: pointer; transition: background .2s; white-space: nowrap; flex-shrink: 0;
     }
     .btn-add:hover { background: var(--accent-dark); }
 
-    /* ── MODAL (bottom sheet en móvil) ── */
     .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.8);
-      z-index: 200;
-      align-items: flex-end;
-      justify-content: center;
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.8);
+      z-index: 200; align-items: flex-end; justify-content: center;
     }
     .modal-overlay.open { display: flex; }
-
     .modal {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--surface); border: 1px solid var(--border);
       border-radius: var(--radius) var(--radius) 0 0;
-      padding: 1.25rem 1.25rem 2rem;
-      width: 100%;
-      max-width: 520px;
-      max-height: 92vh;
-      overflow-y: auto;
+      padding: 1.25rem 1.25rem 2rem; width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto;
     }
-
-    .modal-handle {
-      width: 38px; height: 4px;
-      background: var(--border);
-      border-radius: 2px;
-      margin: 0 auto .75rem;
-    }
-
-    .modal h3 {
-      font-family: 'Oswald', sans-serif;
-      font-size: 1.1rem;
-      margin-bottom: 1.1rem;
-    }
-
-    .img-preview {
-      width: 100%; height: 150px;
-      object-fit: cover;
-      border-radius: 6px;
-      margin-top: .5rem;
-      display: none;
-      border: 1px solid var(--border);
-    }
-
+    .modal-handle { width: 38px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto .75rem; }
+    .modal h3 { font-family: 'Oswald', sans-serif; font-size: 1.1rem; margin-bottom: 1.1rem; }
+    .img-preview { width: 100%; height: 150px; object-fit: cover; border-radius: 6px; margin-top: .5rem; display: none; border: 1px solid var(--border); }
     .upload-area {
-      border: 2px dashed var(--border);
-      border-radius: 6px;
-      padding: 1.25rem;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color .2s;
-      margin-top: .5rem;
+      border: 2px dashed var(--border); border-radius: 6px; padding: 1.25rem;
+      text-align: center; cursor: pointer; transition: border-color .2s; margin-top: .5rem;
     }
     .upload-area:hover { border-color: var(--accent); }
     .upload-area p { color: var(--text-muted); font-size: .82rem; }
     .upload-area input[type="file"] { display: none; }
-
-    .upload-progress {
-      display: none;
-      margin-top: .5rem;
-      font-size: .78rem;
-      color: var(--accent);
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: .75rem;
-      margin-top: 1.25rem;
-    }
-
+    .upload-progress { display: none; margin-top: .5rem; font-size: .78rem; color: var(--accent); }
+    .modal-actions { display: flex; gap: .75rem; margin-top: 1.25rem; }
     .btn-cancel {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      border-radius: 6px;
-      padding: .6rem 1rem;
-      font-size: .88rem;
-      cursor: pointer;
-      flex: 1;
-      transition: all .2s;
+      background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+      border-radius: 6px; padding: .6rem 1rem; font-size: .88rem; cursor: pointer; flex: 1; transition: all .2s;
     }
     .btn-cancel:hover { border-color: var(--text-muted); color: var(--text); }
-
     .btn-save {
-      background: var(--accent);
-      color: #0d0d0d;
-      border: none;
-      border-radius: 6px;
-      padding: .6rem 1rem;
-      font-family: 'Oswald', sans-serif;
-      font-size: .95rem;
-      font-weight: 600;
-      cursor: pointer;
-      flex: 2;
-      transition: background .2s;
+      background: var(--accent); color: #0d0d0d; border: none; border-radius: 6px;
+      padding: .6rem 1rem; font-family: 'Oswald', sans-serif; font-size: .95rem;
+      font-weight: 600; cursor: pointer; flex: 2; transition: background .2s;
     }
     .btn-save:hover { background: var(--accent-dark); }
     .btn-save:disabled { opacity: .5; cursor: not-allowed; }
 
-    /* ── CARDS ── */
-    .items-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: .85rem;
-    }
-
-    .item-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      transition: border-color .2s;
-    }
+    .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: .85rem; }
+    .item-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color .2s; }
     .item-card:hover { border-color: var(--accent); }
-
-    .item-card img {
-      width: 100%; height: 120px;
-      object-fit: cover;
-      display: block;
-      background: var(--surface2);
-    }
-
-    .item-card .no-img {
-      width: 100%; height: 120px;
-      background: var(--surface2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-muted);
-      font-size: .75rem;
-    }
-
+    .item-card img { width: 100%; height: 120px; object-fit: cover; display: block; background: var(--surface2); }
+    .item-card .no-img { width: 100%; height: 120px; background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: .75rem; }
     .item-info { padding: .65rem; }
     .item-info h4 { font-family: 'Oswald', sans-serif; font-size: .9rem; margin-bottom: .15rem; }
     .item-info .price { font-size: .78rem; color: var(--accent); margin-bottom: .5rem; }
     .item-info .desc { font-size: .72rem; color: var(--text-muted); margin-bottom: .6rem; line-height: 1.4; }
-
     .item-actions { display: flex; gap: .4rem; }
-
-    .btn-edit, .btn-delete {
-      flex: 1;
-      border: none;
-      border-radius: 5px;
-      padding: .38rem;
-      font-size: .72rem;
-      cursor: pointer;
-      transition: all .2s;
-    }
+    .btn-edit, .btn-delete { flex: 1; border: none; border-radius: 5px; padding: .38rem; font-size: .72rem; cursor: pointer; transition: all .2s; }
     .btn-edit { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
     .btn-edit:hover { border-color: var(--accent); color: var(--accent); }
     .btn-delete { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
     .btn-delete:hover { background: var(--danger); color: #fff; }
 
-    /* ── GALERÍA ── */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: .85rem;
-    }
-
-    .gallery-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: .85rem; }
+    .gallery-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
     .gallery-card img { width: 100%; height: 110px; object-fit: cover; display: block; }
-    .gal-info {
-      padding: .45rem .65rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: .4rem;
-    }
+    .gal-info { padding: .45rem .65rem; display: flex; align-items: center; justify-content: space-between; gap: .4rem; }
     .gal-info span { font-size: .72rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .gal-info .btn-delete { flex: none; padding: .25rem .45rem; font-size: .68rem; }
 
-    /* ── CREDENCIALES ── */
-    .cred-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      max-width: 420px;
-    }
+    .cred-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; max-width: 420px; }
     .cred-box p { font-size: .85rem; color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.5; }
 
-    /* ── VERIFY MODAL ── */
-    #verify-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.85);
-      z-index: 300;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
+    #verify-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 300; align-items: center; justify-content: center; padding: 1rem; }
     #verify-overlay.open { display: flex; }
-
-    .verify-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.75rem 1.5rem;
-      width: 100%;
-      max-width: 360px;
-    }
-    .verify-box h3 {
-      font-family: 'Oswald', sans-serif;
-      font-size: 1.1rem;
-      margin-bottom: .5rem;
-    }
+    .verify-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; width: 100%; max-width: 360px; }
+    .verify-box h3 { font-family: 'Oswald', sans-serif; font-size: 1.1rem; margin-bottom: .5rem; }
     .verify-box p { font-size: .82rem; color: var(--text-muted); margin-bottom: 1.25rem; }
 
-    /* ── MISC ── */
     .loading { text-align: center; color: var(--text-muted); padding: 2.5rem; font-size: .88rem; }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
     #toast {
-      position: fixed;
-      bottom: 1.25rem;
-      left: 50%;
+      position: fixed; bottom: 1.25rem; left: 50%;
       transform: translateX(-50%) translateY(100px);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: .65rem 1.25rem;
-      border-radius: 8px;
-      font-size: .85rem;
-      z-index: 999;
-      transition: transform .3s ease;
-      pointer-events: none;
-      white-space: nowrap;
+      background: var(--surface); border: 1px solid var(--border); color: var(--text);
+      padding: .65rem 1.25rem; border-radius: 8px; font-size: .85rem;
+      z-index: 999; transition: transform .3s ease; pointer-events: none; white-space: nowrap;
     }
     #toast.show { transform: translateX(-50%) translateY(0); }
     #toast.success { border-color: var(--success); color: var(--success); }
@@ -454,7 +165,6 @@
       .modal-overlay { align-items: center; }
       .modal-handle { display: none; }
     }
-
     @media (max-width: 400px) {
       .items-grid { grid-template-columns: repeat(2, 1fr); }
       .gallery-grid { grid-template-columns: repeat(2, 1fr); }
@@ -463,118 +173,72 @@
 </head>
 <body>
 
-<!-- ════════ LOGIN ════════ -->
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
     <div class="logo">BOLA<span>8</span></div>
     <p class="subtitle">Panel de administración</p>
-    <div class="field">
-      <label>Usuario</label>
-      <input type="text" id="login-user" placeholder="admin" autocomplete="username">
-    </div>
-    <div class="field">
-      <label>Contraseña</label>
-      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
-    </div>
+    <div class="field"><label>Usuario</label><input type="text" id="login-user" placeholder="admin" autocomplete="username"></div>
+    <div class="field"><label>Contraseña</label><input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"></div>
     <button class="btn-primary" onclick="doLogin()">Entrar</button>
     <p class="error-msg" id="login-error">Usuario o contraseña incorrectos</p>
   </div>
 </div>
 
-<!-- ════════ ADMIN ════════ -->
+<!-- ADMIN -->
 <div id="admin-screen">
   <div class="topbar">
-    <div>
-      <span class="logo">BOLA<span>8</span></span>
-      <span class="badge">Admin</span>
-    </div>
+    <div><span class="logo">BOLA<span>8</span></span><span class="badge">Admin</span></div>
     <div class="topbar-right">
       <button class="btn-sm" onclick="openVerify()">⚙ Credenciales</button>
       <button class="btn-sm danger" onclick="doLogout()">Salir</button>
     </div>
   </div>
-
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('ofertas', this)">🎱 Ofertas</button>
-    <button class="tab-btn" onclick="switchTab('bebidas', this)">🍺 Bebidas</button>
-    <button class="tab-btn" onclick="switchTab('comida', this)">🍔 Comida</button>
-    <button class="tab-btn" onclick="switchTab('galeria', this)">📷 Galería</button>
-    <button class="tab-btn" onclick="switchTab('credenciales', this)">🔑 Cuenta</button>
+    <button class="tab-btn active" onclick="switchTab('ofertas',this)">🎱 Ofertas</button>
+    <button class="tab-btn" onclick="switchTab('bebidas',this)">🍺 Bebidas</button>
+    <button class="tab-btn" onclick="switchTab('comida',this)">🍔 Comida</button>
+    <button class="tab-btn" onclick="switchTab('galeria',this)">📷 Galería</button>
+    <button class="tab-btn" id="tab-btn-credenciales" onclick="switchTab('credenciales',this)">🔑 Cuenta</button>
   </div>
-
   <div class="main">
-
     <div class="tab-content active" id="tab-ofertas">
-      <div class="section-header">
-        <h2>Ofertas</h2>
-        <button class="btn-add" onclick="openModal('ofertas')">+ Agregar</button>
-      </div>
+      <div class="section-header"><h2>Ofertas</h2><button class="btn-add" onclick="openModal('ofertas')">+ Agregar</button></div>
       <div class="items-grid" id="list-ofertas"><p class="loading">Cargando...</p></div>
     </div>
-
     <div class="tab-content" id="tab-bebidas">
-      <div class="section-header">
-        <h2>Bebidas</h2>
-        <button class="btn-add" onclick="openModal('bebidas')">+ Agregar</button>
-      </div>
+      <div class="section-header"><h2>Bebidas</h2><button class="btn-add" onclick="openModal('bebidas')">+ Agregar</button></div>
       <div class="items-grid" id="list-bebidas"><p class="loading">Cargando...</p></div>
     </div>
-
     <div class="tab-content" id="tab-comida">
-      <div class="section-header">
-        <h2>Comida</h2>
-        <button class="btn-add" onclick="openModal('comida')">+ Agregar</button>
-      </div>
+      <div class="section-header"><h2>Comida</h2><button class="btn-add" onclick="openModal('comida')">+ Agregar</button></div>
       <div class="items-grid" id="list-comida"><p class="loading">Cargando...</p></div>
     </div>
-
     <div class="tab-content" id="tab-galeria">
-      <div class="section-header">
-        <h2>Galería</h2>
-        <button class="btn-add" onclick="openGalleryModal()">+ Agregar foto</button>
-      </div>
+      <div class="section-header"><h2>Galería</h2><button class="btn-add" onclick="openGalleryModal()">+ Agregar foto</button></div>
       <div class="gallery-grid" id="list-galeria"><p class="loading">Cargando...</p></div>
     </div>
-
     <div class="tab-content" id="tab-credenciales">
-      <div class="section-header">
-        <h2>Cambiar credenciales</h2>
-      </div>
+      <div class="section-header"><h2>Cambiar credenciales</h2></div>
       <div class="cred-box">
         <p>Cambia el usuario y la contraseña con los que accedes a este panel.</p>
-        <div class="field">
-          <label>Nuevo usuario</label>
-          <input type="text" id="new-user" placeholder="Ej: admin" autocomplete="new-password">
-        </div>
-        <div class="field">
-          <label>Nueva contraseña</label>
-          <input type="password" id="new-pass" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
-        </div>
-        <div class="field">
-          <label>Confirmar contraseña</label>
-          <input type="password" id="new-pass2" placeholder="Repite la contraseña" autocomplete="new-password">
-        </div>
+        <div class="field"><label>Nuevo usuario</label><input type="text" id="new-user" placeholder="Ej: admin" autocomplete="new-password"></div>
+        <div class="field"><label>Nueva contraseña</label><input type="password" id="new-pass" placeholder="Mínimo 6 caracteres" autocomplete="new-password"></div>
+        <div class="field"><label>Confirmar contraseña</label><input type="password" id="new-pass2" placeholder="Repite la contraseña" autocomplete="new-password"></div>
         <p class="error-msg" id="cred-error"></p>
         <button class="btn-primary" onclick="saveCredentials()" style="margin-top:.75rem">Guardar cambios</button>
       </div>
     </div>
-
   </div>
 </div>
 
-<!-- ════════ VERIFY MODAL ════════ -->
+<!-- VERIFY MODAL -->
 <div id="verify-overlay">
   <div class="verify-box">
     <h3>🔒 Verificar identidad</h3>
     <p>Ingresa tus credenciales actuales para acceder a la configuración de cuenta.</p>
-    <div class="field">
-      <label>Usuario actual</label>
-      <input type="text" id="verify-user" placeholder="Usuario" autocomplete="username">
-    </div>
-    <div class="field">
-      <label>Contraseña actual</label>
-      <input type="password" id="verify-pass" placeholder="••••••••" autocomplete="current-password">
-    </div>
+    <div class="field"><label>Usuario actual</label><input type="text" id="verify-user" placeholder="Usuario" autocomplete="username"></div>
+    <div class="field"><label>Contraseña actual</label><input type="password" id="verify-pass" placeholder="••••••••" autocomplete="current-password"></div>
     <p class="error-msg" id="verify-error">Credenciales incorrectas</p>
     <div class="modal-actions" style="margin-top:1rem">
       <button class="btn-cancel" onclick="closeVerify()">Cancelar</button>
@@ -583,23 +247,14 @@
   </div>
 </div>
 
-<!-- ════════ MODAL PRODUCTO ════════ -->
+<!-- MODAL PRODUCTO -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
     <div class="modal-handle"></div>
     <h3 id="modal-title">Agregar producto</h3>
-    <div class="field">
-      <label>Nombre *</label>
-      <input type="text" id="f-nombre" placeholder="Ej: Cerveza Cristal">
-    </div>
-    <div class="field">
-      <label>Precio *</label>
-      <input type="text" id="f-precio" placeholder="Ej: 400 Cup">
-    </div>
-    <div class="field">
-      <label>Descripción (opcional)</label>
-      <textarea id="f-desc" placeholder="Descripción breve..."></textarea>
-    </div>
+    <div class="field"><label>Nombre *</label><input type="text" id="f-nombre" placeholder="Ej: Cerveza Cristal"></div>
+    <div class="field"><label>Precio *</label><input type="text" id="f-precio" placeholder="Ej: 400 Cup"></div>
+    <div class="field"><label>Descripción (opcional)</label><textarea id="f-desc" placeholder="Descripción breve..."></textarea></div>
     <div class="field">
       <label>Imagen</label>
       <div class="upload-area" onclick="document.getElementById('f-img-input').click()">
@@ -617,15 +272,12 @@
   </div>
 </div>
 
-<!-- ════════ MODAL GALERÍA ════════ -->
+<!-- MODAL GALERÍA -->
 <div class="modal-overlay" id="gallery-modal-overlay">
   <div class="modal">
     <div class="modal-handle"></div>
     <h3>Agregar foto a la galería</h3>
-    <div class="field">
-      <label>Texto sobre la imagen (opcional)</label>
-      <input type="text" id="g-texto" placeholder="Ej: Ambiente Único">
-    </div>
+    <div class="field"><label>Texto sobre la imagen (opcional)</label><input type="text" id="g-texto" placeholder="Ej: Ambiente Único"></div>
     <div class="field">
       <label>Imagen *</label>
       <div class="upload-area" onclick="document.getElementById('g-img-input').click()">
@@ -642,206 +294,156 @@
   </div>
 </div>
 
-<!-- ════════ TOAST ════════ -->
 <div id="toast"></div>
 
-<!-- ════════ FIREBASE ════════ -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, orderBy, query }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+<script>
+  const SUPA_URL = 'https://abqfnrbkrsswegfezxsp.supabase.co';
+  const SUPA_KEY = 'sb_publishable_6UhtiSpb-z5Pqo5HoLX1gQ_ccjh34Dn';
+  const CLOUDINARY_CLOUD = 'diyflhgpz';
+  const CLOUDINARY_PRESET = 'bola8_uploads';
+  const CREDS_KEY = 'b8_creds';
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDcWtSss5qFPZxLpVyGEQtBqqTY7MmPMjw",
-    authDomain: "bola8-5bee0.firebaseapp.com",
-    projectId: "bola8-5bee0",
-    storageBucket: "bola8-5bee0.firebasestorage.app",
-    messagingSenderId: "745518194962",
-    appId: "1:745518194962:web:3724a0405a8030764dd3cb"
-  };
-
-  const CLOUDINARY_CLOUD = "diyflhgpz";
-  const CLOUDINARY_PRESET = "bola8_uploads";
-  const CREDS_KEY = "b8_creds";
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // ── CREDENCIALES (localStorage) ──
   function loadCreds() {
-    try {
-      const raw = localStorage.getItem(CREDS_KEY);
-      if (raw) return JSON.parse(raw);
-    } catch {}
-    return { user: "admin", pass: "bola8admin2025" };
+    try { const r = localStorage.getItem(CREDS_KEY); if (r) return JSON.parse(r); } catch {}
+    return { user: 'admin', pass: 'bola8admin2025' };
   }
+  function saveCreds(user, pass) { localStorage.setItem(CREDS_KEY, JSON.stringify({ user, pass })); }
 
-  function saveCreds(user, pass) {
-    localStorage.setItem(CREDS_KEY, JSON.stringify({ user, pass }));
-  }
-
-  // ── ESTADO ──
   let currentSection = 'ofertas';
   let editingId = null;
   let uploadedImageUrl = null;
   let galleryImageUrl = null;
 
+  function headers() {
+    return { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
+  }
+
   // ── LOGIN ──
-  window.doLogin = () => {
+  function doLogin() {
     const u = document.getElementById('login-user').value.trim();
     const p = document.getElementById('login-pass').value;
-    const creds = loadCreds();
-    if (u === creds.user && p === creds.pass) {
+    const c = loadCreds();
+    if (u === c.user && p === c.pass) {
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('admin-screen').style.display = 'block';
       loadAll();
     } else {
       document.getElementById('login-error').style.display = 'block';
     }
-  };
+  }
+  document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
-  document.getElementById('login-pass').addEventListener('keydown', e => {
-    if (e.key === 'Enter') window.doLogin();
-  });
-
-  window.doLogout = () => {
+  function doLogout() {
     document.getElementById('admin-screen').style.display = 'none';
     document.getElementById('login-screen').style.display = 'flex';
     document.getElementById('login-user').value = '';
     document.getElementById('login-pass').value = '';
-  };
+  }
 
   // ── TABS ──
-  window.switchTab = (section, btn) => {
+  function switchTab(section, btn) {
     currentSection = section;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(`tab-${section}`).classList.add('active');
-  };
+  }
 
-  // ── VERIFY MODAL (para sección credenciales) ──
-  window.openVerify = () => {
+  // ── VERIFY ──
+  function openVerify() {
     document.getElementById('verify-user').value = '';
     document.getElementById('verify-pass').value = '';
     document.getElementById('verify-error').style.display = 'none';
     document.getElementById('verify-overlay').classList.add('open');
-  };
-
-  window.closeVerify = () => {
-    document.getElementById('verify-overlay').classList.remove('open');
-  };
-
-  window.verifyAndOpen = () => {
+  }
+  function closeVerify() { document.getElementById('verify-overlay').classList.remove('open'); }
+  function verifyAndOpen() {
     const u = document.getElementById('verify-user').value.trim();
     const p = document.getElementById('verify-pass').value;
-    const creds = loadCreds();
-    if (u === creds.user && p === creds.pass) {
+    const c = loadCreds();
+    if (u === c.user && p === c.pass) {
       closeVerify();
-      // Ir a tab credenciales
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      document.querySelector('[onclick*="credenciales"]').classList.add('active');
+      document.getElementById('tab-btn-credenciales').classList.add('active');
       document.getElementById('tab-credenciales').classList.add('active');
-      document.getElementById('new-user').value = creds.user;
+      document.getElementById('new-user').value = c.user;
     } else {
       document.getElementById('verify-error').style.display = 'block';
     }
-  };
+  }
+  document.getElementById('verify-pass').addEventListener('keydown', e => { if (e.key === 'Enter') verifyAndOpen(); });
 
-  document.getElementById('verify-pass').addEventListener('keydown', e => {
-    if (e.key === 'Enter') window.verifyAndOpen();
-  });
-
-  // ── GUARDAR CREDENCIALES ──
-  window.saveCredentials = () => {
+  // ── CREDENCIALES ──
+  function saveCredentials() {
     const user = document.getElementById('new-user').value.trim();
     const pass = document.getElementById('new-pass').value;
     const pass2 = document.getElementById('new-pass2').value;
     const errEl = document.getElementById('cred-error');
-
-    if (!user || !pass) {
-      errEl.textContent = 'Usuario y contraseña son obligatorios';
-      errEl.style.display = 'block'; return;
-    }
-    if (pass !== pass2) {
-      errEl.textContent = 'Las contraseñas no coinciden';
-      errEl.style.display = 'block'; return;
-    }
-    if (pass.length < 6) {
-      errEl.textContent = 'La contraseña debe tener al menos 6 caracteres';
-      errEl.style.display = 'block'; return;
-    }
-
+    if (!user || !pass) { errEl.textContent = 'Usuario y contraseña son obligatorios'; errEl.style.display = 'block'; return; }
+    if (pass !== pass2) { errEl.textContent = 'Las contraseñas no coinciden'; errEl.style.display = 'block'; return; }
+    if (pass.length < 6) { errEl.textContent = 'Mínimo 6 caracteres'; errEl.style.display = 'block'; return; }
     saveCreds(user, pass);
     errEl.style.display = 'none';
     document.getElementById('new-pass').value = '';
     document.getElementById('new-pass2').value = '';
-    showToast('Credenciales actualizadas correctamente', 'success');
-  };
+    showToast('Credenciales actualizadas', 'success');
+  }
 
   // ── CARGAR DATOS ──
-  function loadAll() {
-    ['ofertas', 'bebidas', 'comida'].forEach(s => loadSection(s));
+  async function loadAll() {
+    loadSection('ofertas');
+    loadSection('bebidas');
+    loadSection('comida');
     loadGallery();
   }
 
-  function loadSection(section) {
+  async function loadSection(section) {
     const listEl = document.getElementById(`list-${section}`);
-    const q = query(collection(db, section), orderBy('nombre'));
-    onSnapshot(q, (snap) => {
-      if (snap.empty) {
-        listEl.innerHTML = `<p class="loading">No hay ${section} aún.</p>`;
-        return;
-      }
-      listEl.innerHTML = '';
-      snap.forEach(docSnap => {
-        const d = docSnap.data();
-        const dataStr = JSON.stringify(d).replace(/"/g, '&quot;');
-        const card = document.createElement('div');
-        card.className = 'item-card';
-        card.innerHTML = `
-          ${d.imagen ? `<img src="${d.imagen}" alt="${d.nombre}" loading="lazy">` : `<div class="no-img">Sin imagen</div>`}
-          <div class="item-info">
-            <h4>${d.nombre}</h4>
-            <p class="price">${d.precio}</p>
-            ${d.descripcion ? `<div class="desc">${d.descripcion}</div>` : ''}
-            <div class="item-actions">
-              <button class="btn-edit" onclick="openModal('${section}', '${docSnap.id}', ${dataStr})">Editar</button>
-              <button class="btn-delete" onclick="deleteItem('${section}', '${docSnap.id}')">Eliminar</button>
-            </div>
-          </div>`;
-        listEl.appendChild(card);
-      });
+    const res = await fetch(`${SUPA_URL}/rest/v1/${section}?select=*&order=nombre.asc`, { headers: headers() });
+    const items = await res.json();
+    if (!items.length) { listEl.innerHTML = `<p class="loading">No hay ${section} aún.</p>`; return; }
+    listEl.innerHTML = '';
+    items.forEach(d => {
+      const card = document.createElement('div');
+      card.className = 'item-card';
+      const dataStr = encodeURIComponent(JSON.stringify(d));
+      card.innerHTML = `
+        ${d.imagen ? `<img src="${d.imagen}" alt="${d.nombre}" loading="lazy">` : `<div class="no-img">Sin imagen</div>`}
+        <div class="item-info">
+          <h4>${d.nombre}</h4>
+          <p class="price">${d.precio}</p>
+          ${d.descripcion ? `<div class="desc">${d.descripcion}</div>` : ''}
+          <div class="item-actions">
+            <button class="btn-edit" onclick="openModalFromData('${section}','${d.id}','${dataStr}')">Editar</button>
+            <button class="btn-delete" onclick="deleteItem('${section}','${d.id}')">Eliminar</button>
+          </div>
+        </div>`;
+      listEl.appendChild(card);
     });
   }
 
-  function loadGallery() {
+  async function loadGallery() {
     const listEl = document.getElementById('list-galeria');
-    const q = query(collection(db, 'galeria'), orderBy('orden'));
-    onSnapshot(q, (snap) => {
-      if (snap.empty) {
-        listEl.innerHTML = `<p class="loading">No hay fotos aún.</p>`;
-        return;
-      }
-      listEl.innerHTML = '';
-      snap.forEach(docSnap => {
-        const d = docSnap.data();
-        const card = document.createElement('div');
-        card.className = 'gallery-card';
-        card.innerHTML = `
-          <img src="${d.imagen}" alt="${d.texto || ''}" loading="lazy">
-          <div class="gal-info">
-            <span>${d.texto || 'Sin texto'}</span>
-            <button class="btn-delete" onclick="deleteItem('galeria', '${docSnap.id}')">✕</button>
-          </div>`;
-        listEl.appendChild(card);
-      });
+    const res = await fetch(`${SUPA_URL}/rest/v1/galeria?select=*&order=orden.asc`, { headers: headers() });
+    const items = await res.json();
+    if (!items.length) { listEl.innerHTML = `<p class="loading">No hay fotos aún.</p>`; return; }
+    listEl.innerHTML = '';
+    items.forEach(d => {
+      const card = document.createElement('div');
+      card.className = 'gallery-card';
+      card.innerHTML = `
+        <img src="${d.imagen}" alt="${d.texto || ''}" loading="lazy">
+        <div class="gal-info">
+          <span>${d.texto || 'Sin texto'}</span>
+          <button class="btn-delete" onclick="deleteItem('galeria','${d.id}')">✕</button>
+        </div>`;
+      listEl.appendChild(card);
     });
   }
 
   // ── MODAL PRODUCTO ──
-  window.openModal = (section, id = null, data = null) => {
+  function openModal(section, id = null, data = null) {
     currentSection = section;
     editingId = id;
     uploadedImageUrl = data?.imagen || null;
@@ -856,89 +458,77 @@
     document.getElementById('btn-save').disabled = false;
     document.getElementById('btn-save').textContent = 'Guardar';
     document.getElementById('modal-overlay').classList.add('open');
-  };
+  }
 
-  window.closeModal = () => {
+  function openModalFromData(section, id, dataStr) {
+    const data = JSON.parse(decodeURIComponent(dataStr));
+    openModal(section, id, data);
+  }
+
+  function closeModal() {
     document.getElementById('modal-overlay').classList.remove('open');
-    editingId = null;
-    uploadedImageUrl = null;
-  };
+    editingId = null; uploadedImageUrl = null;
+  }
 
   // ── CLOUDINARY ──
   async function uploadToCloudinary(file) {
     const fd = new FormData();
     fd.append('file', file);
     fd.append('upload_preset', CLOUDINARY_PRESET);
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
-      method: 'POST', body: fd
-    });
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, { method: 'POST', body: fd });
     const data = await res.json();
     if (!data.secure_url) throw new Error('Upload failed');
     return data.secure_url;
   }
 
-  window.handleImageSelect = async (input) => {
-    const file = input.files[0];
-    if (!file) return;
+  async function handleImageSelect(input) {
+    const file = input.files[0]; if (!file) return;
     const progress = document.getElementById('upload-progress');
     const preview = document.getElementById('img-preview');
     const btn = document.getElementById('btn-save');
-    progress.style.display = 'block';
-    progress.textContent = 'Subiendo imagen...';
-    btn.disabled = true;
+    progress.style.display = 'block'; progress.textContent = 'Subiendo imagen...'; btn.disabled = true;
     try {
       uploadedImageUrl = await uploadToCloudinary(file);
-      preview.src = uploadedImageUrl;
-      preview.style.display = 'block';
+      preview.src = uploadedImageUrl; preview.style.display = 'block';
       progress.textContent = '✓ Imagen subida';
-    } catch {
-      progress.textContent = '✗ Error al subir';
-      showToast('Error al subir la imagen', 'error');
-    } finally {
-      btn.disabled = false;
-    }
-  };
+    } catch { progress.textContent = '✗ Error al subir'; showToast('Error al subir la imagen', 'error'); }
+    finally { btn.disabled = false; }
+  }
 
   // ── GUARDAR PRODUCTO ──
-  window.saveItem = async () => {
+  async function saveItem() {
     const nombre = document.getElementById('f-nombre').value.trim();
     const precio = document.getElementById('f-precio').value.trim();
     const descripcion = document.getElementById('f-desc').value.trim();
     if (!nombre || !precio) { showToast('Nombre y precio son obligatorios', 'error'); return; }
     const btn = document.getElementById('btn-save');
-    btn.disabled = true;
-    btn.textContent = 'Guardando...';
-    const data = { nombre, precio, descripcion };
-    if (uploadedImageUrl) data.imagen = uploadedImageUrl;
+    btn.disabled = true; btn.textContent = 'Guardando...';
+    const data = { nombre, precio, descripcion, imagen: uploadedImageUrl || '' };
     try {
       if (editingId) {
-        await updateDoc(doc(db, currentSection, editingId), data);
+        await fetch(`${SUPA_URL}/rest/v1/${currentSection}?id=eq.${editingId}`, { method: 'PATCH', headers: headers(), body: JSON.stringify(data) });
         showToast('Producto actualizado', 'success');
       } else {
-        await addDoc(collection(db, currentSection), data);
+        await fetch(`${SUPA_URL}/rest/v1/${currentSection}`, { method: 'POST', headers: headers(), body: JSON.stringify(data) });
         showToast('Producto agregado', 'success');
       }
       closeModal();
-    } catch {
-      showToast('Error al guardar', 'error');
-      btn.disabled = false;
-      btn.textContent = 'Guardar';
-    }
-  };
+      loadSection(currentSection);
+    } catch { showToast('Error al guardar', 'error'); btn.disabled = false; btn.textContent = 'Guardar'; }
+  }
 
   // ── ELIMINAR ──
-  window.deleteItem = async (section, id) => {
+  async function deleteItem(section, id) {
     if (!confirm('¿Eliminar este elemento?')) return;
     try {
-      await deleteDoc(doc(db, section, id));
+      await fetch(`${SUPA_URL}/rest/v1/${section}?id=eq.${id}`, { method: 'DELETE', headers: headers() });
       showToast('Eliminado', 'success');
-    } catch {
-      showToast('Error al eliminar', 'error');
-    }
-  };
+      if (section === 'galeria') loadGallery(); else loadSection(section);
+    } catch { showToast('Error al eliminar', 'error'); }
+  }
 
   // ── MODAL GALERÍA ──
-  window.openGalleryModal = () => {
+  function openGalleryModal() {
     galleryImageUrl = null;
     document.getElementById('g-texto').value = '';
     document.getElementById('g-img-preview').style.display = 'none';
@@ -946,60 +536,44 @@
     document.getElementById('g-img-input').value = '';
     document.getElementById('g-btn-save').disabled = false;
     document.getElementById('gallery-modal-overlay').classList.add('open');
-  };
+  }
+  function closeGalleryModal() { document.getElementById('gallery-modal-overlay').classList.remove('open'); galleryImageUrl = null; }
 
-  window.closeGalleryModal = () => {
-    document.getElementById('gallery-modal-overlay').classList.remove('open');
-    galleryImageUrl = null;
-  };
-
-  window.handleGalleryImageSelect = async (input) => {
-    const file = input.files[0];
-    if (!file) return;
+  async function handleGalleryImageSelect(input) {
+    const file = input.files[0]; if (!file) return;
     const progress = document.getElementById('g-upload-progress');
     const preview = document.getElementById('g-img-preview');
     const btn = document.getElementById('g-btn-save');
-    progress.style.display = 'block';
-    progress.textContent = 'Subiendo imagen...';
-    btn.disabled = true;
+    progress.style.display = 'block'; progress.textContent = 'Subiendo imagen...'; btn.disabled = true;
     try {
       galleryImageUrl = await uploadToCloudinary(file);
-      preview.src = galleryImageUrl;
-      preview.style.display = 'block';
+      preview.src = galleryImageUrl; preview.style.display = 'block';
       progress.textContent = '✓ Foto subida';
-    } catch {
-      progress.textContent = '✗ Error al subir';
-      showToast('Error al subir la foto', 'error');
-    } finally {
-      btn.disabled = false;
-    }
-  };
+    } catch { progress.textContent = '✗ Error al subir'; showToast('Error al subir la foto', 'error'); }
+    finally { btn.disabled = false; }
+  }
 
-  window.saveGalleryItem = async () => {
+  async function saveGalleryItem() {
     if (!galleryImageUrl) { showToast('Selecciona una imagen', 'error'); return; }
     const texto = document.getElementById('g-texto').value.trim();
     const btn = document.getElementById('g-btn-save');
     btn.disabled = true;
     try {
-      const snap = await getDocs(collection(db, 'galeria'));
-      await addDoc(collection(db, 'galeria'), { imagen: galleryImageUrl, texto: texto || '', orden: snap.size });
+      const res = await fetch(`${SUPA_URL}/rest/v1/galeria?select=count`, { headers: headers() });
+      const count = (await res.json()).length || 0;
+      await fetch(`${SUPA_URL}/rest/v1/galeria`, { method: 'POST', headers: headers(), body: JSON.stringify({ imagen: galleryImageUrl, texto: texto || '', orden: count }) });
       showToast('Foto agregada', 'success');
       closeGalleryModal();
-    } catch {
-      showToast('Error al guardar', 'error');
-      btn.disabled = false;
-    }
-  };
+      loadGallery();
+    } catch { showToast('Error al guardar', 'error'); btn.disabled = false; }
+  }
 
   // ── TOAST ──
   function showToast(msg, type = '') {
     const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = `show ${type}`;
+    t.textContent = msg; t.className = `show ${type}`;
     setTimeout(() => t.className = '', 3000);
   }
-  window.showToast = showToast;
 </script>
-
 </body>
 </html>
