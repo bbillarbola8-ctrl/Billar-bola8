@@ -36,6 +36,14 @@
     .btn-primary:hover { background: var(--accent-dark); }
     .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
     .error-msg { color: var(--danger); font-size: .82rem; margin-top: .75rem; display: none; }
+    .pass-wrapper { position: relative; }
+    .pass-wrapper input { padding-right: 2.75rem; }
+    .pass-toggle {
+      position: absolute; right: .75rem; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: var(--text-muted);
+      font-size: 1rem; padding: 0; line-height: 1; transition: color .2s;
+    }
+    .pass-toggle:hover { color: var(--accent); }
 
     #admin-screen { display: none; }
     .topbar {
@@ -179,7 +187,13 @@
     <div class="logo">BOLA<span>8</span></div>
     <p class="subtitle">Panel de administración</p>
     <div class="field"><label>Usuario</label><input type="text" id="login-user" placeholder="admin" autocomplete="username"></div>
-    <div class="field"><label>Contraseña</label><input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"></div>
+    <div class="field">
+      <label>Contraseña</label>
+      <div class="pass-wrapper">
+        <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+        <button class="pass-toggle" type="button" onclick="togglePass('login-pass',this)">👁</button>
+      </div>
+    </div>
     <button class="btn-primary" onclick="doLogin()">Entrar</button>
     <p class="error-msg" id="login-error">Usuario o contraseña incorrectos</p>
   </div>
@@ -223,8 +237,20 @@
       <div class="cred-box">
         <p>Cambia el usuario y la contraseña con los que accedes a este panel.</p>
         <div class="field"><label>Nuevo usuario</label><input type="text" id="new-user" placeholder="Ej: admin" autocomplete="new-password"></div>
-        <div class="field"><label>Nueva contraseña</label><input type="password" id="new-pass" placeholder="Mínimo 6 caracteres" autocomplete="new-password"></div>
-        <div class="field"><label>Confirmar contraseña</label><input type="password" id="new-pass2" placeholder="Repite la contraseña" autocomplete="new-password"></div>
+        <div class="field">
+          <label>Nueva contraseña</label>
+          <div class="pass-wrapper">
+            <input type="password" id="new-pass" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+            <button class="pass-toggle" type="button" onclick="togglePass('new-pass',this)">👁</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Confirmar contraseña</label>
+          <div class="pass-wrapper">
+            <input type="password" id="new-pass2" placeholder="Repite la contraseña" autocomplete="new-password">
+            <button class="pass-toggle" type="button" onclick="togglePass('new-pass2',this)">👁</button>
+          </div>
+        </div>
         <p class="error-msg" id="cred-error"></p>
         <button class="btn-primary" onclick="saveCredentials()" style="margin-top:.75rem">Guardar cambios</button>
       </div>
@@ -238,7 +264,13 @@
     <h3>🔒 Verificar identidad</h3>
     <p>Ingresa tus credenciales actuales para acceder a la configuración de cuenta.</p>
     <div class="field"><label>Usuario actual</label><input type="text" id="verify-user" placeholder="Usuario" autocomplete="username"></div>
-    <div class="field"><label>Contraseña actual</label><input type="password" id="verify-pass" placeholder="••••••••" autocomplete="current-password"></div>
+    <div class="field">
+      <label>Contraseña actual</label>
+      <div class="pass-wrapper">
+        <input type="password" id="verify-pass" placeholder="••••••••" autocomplete="current-password">
+        <button class="pass-toggle" type="button" onclick="togglePass('verify-pass',this)">👁</button>
+      </div>
+    </div>
     <p class="error-msg" id="verify-error">Credenciales incorrectas</p>
     <div class="modal-actions" style="margin-top:1rem">
       <button class="btn-cancel" onclick="closeVerify()">Cancelar</button>
@@ -305,7 +337,7 @@
 
   function loadCreds() {
     try { const r = localStorage.getItem(CREDS_KEY); if (r) return JSON.parse(r); } catch {}
-    return { user: 'admin', pass: 'bola8admin2025' };
+    return { user: 'Bola 8', pass: 'billarbola8' };
   }
   function saveCreds(user, pass) { localStorage.setItem(CREDS_KEY, JSON.stringify({ user, pass })); }
 
@@ -319,6 +351,13 @@
   }
 
   // ── LOGIN ──
+  function togglePass(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    btn.textContent = show ? '🙈' : '👁';
+  }
+
   function doLogin() {
     const u = document.getElementById('login-user').value.trim();
     const p = document.getElementById('login-pass').value;
